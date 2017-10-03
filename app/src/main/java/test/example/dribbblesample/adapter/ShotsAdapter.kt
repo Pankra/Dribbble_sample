@@ -3,9 +3,10 @@ package test.example.dribbblesample.adapter
 import android.support.v4.util.SparseArrayCompat
 import android.support.v7.widget.RecyclerView
 import android.view.ViewGroup
+import test.example.dribbblesample.ShotItem
 import java.util.*
 
-class ShotsAdapter(listener: ShotsDelegateAdapter.onViewSelectedListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ShotsAdapter(listener: ShotsDelegateAdapter.OnViewSelectedListener) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var items: ArrayList<ViewType>
     private var delegateAdapters = SparseArrayCompat<ViewTypeDelegateAdapter>()
@@ -31,4 +32,10 @@ class ShotsAdapter(listener: ShotsDelegateAdapter.onViewSelectedListener) : Recy
 
     override fun getItemViewType(position: Int) = items[position].getViewType()
 
+    fun addShots(shots: List<ShotItem>) {
+        val initPosition = items.size - 1
+        // insert shots before the loading at the end of the list
+        items.addAll(initPosition, shots)
+        notifyItemRangeInserted(initPosition, shots.size)
+    }
 }

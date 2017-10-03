@@ -8,20 +8,18 @@ import test.example.dribbblesample.ShotItem
 import test.example.dribbblesample.inflate
 import test.example.dribbblesample.loadImg
 
-class ShotsDelegateAdapter(val viewActions: onViewSelectedListener) : ViewTypeDelegateAdapter {
+class ShotsDelegateAdapter(val viewActions: OnViewSelectedListener) : ViewTypeDelegateAdapter {
 
-    interface onViewSelectedListener {
+    interface OnViewSelectedListener {
         fun onItemSelected(id: Int)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder = NewsViewHolder(parent)
+    override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder = ShotsViewHolder(parent)
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: ViewType) {
-        holder as NewsViewHolder
-        holder.bind(item as ShotItem)
-    }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item: ViewType) =
+            (holder as ShotsViewHolder).bind(item as ShotItem)
 
-    inner class NewsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
+    inner class ShotsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             parent.inflate(R.layout.shot_item)) {
 
         private val image = itemView.image
