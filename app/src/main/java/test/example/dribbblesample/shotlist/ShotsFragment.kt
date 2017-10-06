@@ -18,8 +18,14 @@ class ShotsFragment : Fragment(), ShotsDelegateAdapter.OnViewSelectedListener {
         Toast.makeText(context, ""+id, Toast.LENGTH_SHORT).show()
     }
 
+//    @Inject lateinit var shotsRepository: ShotsRepository
     private val shotList by lazy {
         shots_recycler
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        DribbbleApp.graph.inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,11 +52,12 @@ class ShotsFragment : Fragment(), ShotsDelegateAdapter.OnViewSelectedListener {
 
         shotList.layoutManager = layoutManager
 
-        val shots = (1..10).map {
+        var shots = (1..10).map {
             val images = Images(null, "https://unsplash.it/200/300?image=$it", "https://unsplash.it/200/300?image=$it")
             val user = User(it, "User$it", "username$it")
             ShotItem(it, "Title$it", "Description$it", images, user)
         }
+//        shots = shotsRepositoryImpl.getShots()
         (shotList.adapter as ShotsAdapter).addShots(shots)
     }
 }
