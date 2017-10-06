@@ -25,7 +25,7 @@ class ShotsDelegateAdapter(val viewActions: OnViewSelectedListener) : ViewTypeDe
         private val image = itemView.image
 
         fun bind(item: ShotItem) {
-            image.loadImg(item.imageUrl)
+            image.loadImg(item.images.teaser)
 
             super.itemView.setOnClickListener { viewActions.onItemSelected(item.id)}
         }

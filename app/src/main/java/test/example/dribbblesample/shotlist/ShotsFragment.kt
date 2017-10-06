@@ -8,12 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import kotlinx.android.synthetic.main.shots_fragment.*
-import test.example.dribbblesample.R
-import test.example.dribbblesample.ShotItem
+import test.example.dribbblesample.*
 import test.example.dribbblesample.adapter.AdapterConstants
 import test.example.dribbblesample.adapter.ShotsAdapter
 import test.example.dribbblesample.adapter.ShotsDelegateAdapter
-import test.example.dribbblesample.inflate
 
 class ShotsFragment : Fragment(), ShotsDelegateAdapter.OnViewSelectedListener {
     override fun onItemSelected(id: Int) {
@@ -48,7 +46,11 @@ class ShotsFragment : Fragment(), ShotsDelegateAdapter.OnViewSelectedListener {
 
         shotList.layoutManager = layoutManager
 
-        val shots = (1..10).map { ShotItem(it, "https://unsplash.it/200/300?image=$it") }
+        val shots = (1..10).map {
+            val images = Images(null, "https://unsplash.it/200/300?image=$it", "https://unsplash.it/200/300?image=$it")
+            val user = User(it, "User$it", "username$it")
+            ShotItem(it, "Title$it", "Description$it", images, user)
+        }
         (shotList.adapter as ShotsAdapter).addShots(shots)
     }
 }

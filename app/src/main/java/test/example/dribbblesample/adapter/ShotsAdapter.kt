@@ -38,4 +38,19 @@ class ShotsAdapter(listener: ShotsDelegateAdapter.OnViewSelectedListener) : Recy
         items.addAll(initPosition, shots)
         notifyItemRangeInserted(initPosition, shots.size)
     }
+
+    fun clearAndAddShots(shots: List<ShotItem>) {
+        items.clear()
+        notifyItemRangeRemoved(0, getLastPosition())
+
+        items.addAll(shots)
+        items.add(loadingItem)
+        notifyItemRangeInserted(0, items.size)
+    }
+
+    fun getShots(): List<ShotItem> =
+            items.filter { it.getViewType() == AdapterConstants.SHOT }
+                    .map { it as ShotItem }
+
+    private fun getLastPosition() = if (items.lastIndex == -1) 0 else items.lastIndex
 }
