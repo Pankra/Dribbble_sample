@@ -22,10 +22,9 @@ class ShotsDelegateAdapter(val viewActions: OnViewSelectedListener) : ViewTypeDe
     inner class ShotsViewHolder(parent: ViewGroup) : RecyclerView.ViewHolder(
             parent.inflate(R.layout.shot_item)) {
 
-        private val image = itemView.image
-
         fun bind(item: ShotItem) {
-            image.loadImg(item.images.teaser)
+            itemView.image.loadImg(item.images.teaser)
+            itemView.title.text = item.title
 
             super.itemView.setOnClickListener { viewActions.onItemSelected(item.id)}
         }

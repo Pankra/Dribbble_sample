@@ -12,16 +12,20 @@ import test.example.dribbblesample.*
 import test.example.dribbblesample.adapter.AdapterConstants
 import test.example.dribbblesample.adapter.ShotsAdapter
 import test.example.dribbblesample.adapter.ShotsDelegateAdapter
+import test.example.dribbblesample.di.ShotsRepository
+import test.example.dribbblesample.interactor.Executor
+import test.example.dribbblesample.interactor.ShotsInteractor
+import test.example.dribbblesample.interactor.ShotsInteractorImpl
+import javax.inject.Inject
 
 class ShotsFragment : Fragment(), ShotsDelegateAdapter.OnViewSelectedListener {
     override fun onItemSelected(id: Int) {
         Toast.makeText(context, ""+id, Toast.LENGTH_SHORT).show()
     }
 
-//    @Inject lateinit var shotsRepository: ShotsRepository
-    private val shotList by lazy {
-        shots_recycler
-    }
+    @Inject lateinit var shotsRepository: ShotsRepository
+    @Inject lateinit var threadsExecutor: Executor
+    var page = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,14 +39,14 @@ class ShotsFragment : Fragment(), ShotsDelegateAdapter.OnViewSelectedListener {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (shotList.adapter == null) {
-            shotList.adapter = ShotsAdapter(this)
+        if (shots_recycler.adapter == null) {
+            shots_recycler.adapter = ShotsAdapter(this)
         }
 
         val layoutManager = GridLayoutManager(context, 2)
         layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
-                when (shotList.adapter.getItemViewType(position)) {
+                when (shots_recycler.adapter.getItemViewType(position)) {
                     AdapterConstants.SHOT -> return 1
                     AdapterConstants.LOADING -> return 2
                 }
@@ -50,14 +54,25 @@ class ShotsFragment : Fragment(), ShotsDelegateAdapter.OnViewSelectedListener {
             }
         }
 
-        shotList.layoutManager = layoutManager
+        shots_recycler.layoutManager = layoutManager
+        shots_recycler.addOnScrollListener(InfiniteScrollListener({ requestShots() }, layoutManager))
 
-        var shots = (1..10).map {
-            val images = Images(null, "https://unsplash.it/200/300?image=$it", "https://unsplash.it/200/300?image=$it")
-            val user = User(it, "User$it", "username$it")
-            ShotItem(it, "Title$it", "Description$it", images, user)
-        }
-//        shots = shotsRepositoryImpl.getShots()
-        (shotList.adapter as ShotsAdapter).addShots(shots)
+        requestShots()
+    }
+
+    private fun requestShots() {
+        ShotsInteractorImpl(
+                threadsExecutor,
+                page,
+                shotsRepository,
+                object: ShotsInteractor.Callback {
+                    override fun onShotsReceived(shots: List<ShotItem>) {
+                        val shotsAdapter = shots_recycler.adapter as ShotsAdapter
+                        shotsAdapter.addShots(shots)
+                        page++
+                        //TODO "something strange on load images: not refreshing?"
+                    }
+                }
+        ).execute()
     }
 }

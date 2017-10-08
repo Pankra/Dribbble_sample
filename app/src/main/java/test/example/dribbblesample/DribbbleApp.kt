@@ -1,6 +1,7 @@
 package test.example.dribbblesample
 
 import android.app.Application
+import test.example.dribbblesample.di.AppModule
 import test.example.dribbblesample.di.ApplicationComponent
 import test.example.dribbblesample.di.DaggerApplicationComponent
 
@@ -11,6 +12,8 @@ class DribbbleApp: Application() {
 
     override fun onCreate() {
         super.onCreate()
-        graph = DaggerApplicationComponent.builder().build()
+        graph = DaggerApplicationComponent.builder()
+                .appModule(AppModule(this))
+                .build()
     }
 }
