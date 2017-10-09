@@ -6,7 +6,6 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import kotlinx.android.synthetic.main.shots_fragment.*
 import test.example.dribbblesample.*
 import test.example.dribbblesample.adapter.AdapterConstants
@@ -16,11 +15,16 @@ import test.example.dribbblesample.di.ShotsRepository
 import test.example.dribbblesample.interactor.Executor
 import test.example.dribbblesample.interactor.ShotsInteractor
 import test.example.dribbblesample.interactor.ShotsInteractorImpl
+import test.example.dribbblesample.shotdetails.ShotDetailsFragment
 import javax.inject.Inject
 
 class ShotsFragment : Fragment(), ShotsDelegateAdapter.OnViewSelectedListener {
-    override fun onItemSelected(id: Int) {
-        Toast.makeText(context, ""+id, Toast.LENGTH_SHORT).show()
+    override fun onItemSelected(item: ShotItem) {
+        val fragment = ShotDetailsFragment()
+        val args = Bundle()
+        args.putParcelable(ShotDetailsFragment.ARGS_SHOT, item)
+        fragment.arguments = args
+        (activity as MainActivity).changeFragment(fragment)
     }
 
     @Inject lateinit var shotsRepository: ShotsRepository

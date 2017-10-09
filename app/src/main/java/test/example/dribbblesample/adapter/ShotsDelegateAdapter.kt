@@ -11,7 +11,7 @@ import test.example.dribbblesample.loadImg
 class ShotsDelegateAdapter(val viewActions: OnViewSelectedListener) : ViewTypeDelegateAdapter {
 
     interface OnViewSelectedListener {
-        fun onItemSelected(id: Int)
+        fun onItemSelected(item: ShotItem)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup): RecyclerView.ViewHolder = ShotsViewHolder(parent)
@@ -26,7 +26,7 @@ class ShotsDelegateAdapter(val viewActions: OnViewSelectedListener) : ViewTypeDe
             itemView.image.loadImg(item.images.teaser)
             itemView.title.text = item.title
 
-            super.itemView.setOnClickListener { viewActions.onItemSelected(item.id)}
+            super.itemView.setOnClickListener { viewActions.onItemSelected(item)}
         }
     }
 }
