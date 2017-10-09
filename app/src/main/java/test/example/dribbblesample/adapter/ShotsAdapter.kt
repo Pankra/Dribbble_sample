@@ -48,9 +48,9 @@ class ShotsAdapter(listener: ShotsDelegateAdapter.OnViewSelectedListener) : Recy
         notifyItemRangeInserted(0, items.size)
     }
 
-    fun getShots(): List<ShotItem> =
+    fun getShots(): ArrayList<ShotItem> =
             items.filter { it.getViewType() == AdapterConstants.SHOT }
-                    .map { it as ShotItem }
+                    .map { it as ShotItem } as ArrayList
 
     private fun getLastPosition() = if (items.lastIndex == -1) 0 else items.lastIndex
 }

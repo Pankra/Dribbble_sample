@@ -24,7 +24,11 @@ class ShotsFragment : Fragment(), ShotsDelegateAdapter.OnViewSelectedListener {
         val args = Bundle()
         args.putParcelable(ShotDetailsFragment.ARGS_SHOT, item)
         fragment.arguments = args
-        (activity as MainActivity).changeFragment(fragment)
+        (activity as MainActivity).changeFragment(fragment, true)
+    }
+
+    companion object {
+        private val STATE_SHOTS = "state_shots"
     }
 
     @Inject lateinit var shotsRepository: ShotsRepository
@@ -61,7 +65,20 @@ class ShotsFragment : Fragment(), ShotsDelegateAdapter.OnViewSelectedListener {
         shots_recycler.layoutManager = layoutManager
         shots_recycler.addOnScrollListener(InfiniteScrollListener({ requestShots() }, layoutManager))
 
-        requestShots()
+        if (savedInstanceState != null && savedInstanceState.containsKey(STATE_SHOTS)) {
+            val shotList = savedInstanceState.getParcelableArrayList<ShotItem>(STATE_SHOTS)
+            (shots_recycler.adapter as ShotsAdapter).clearAndAddShots(shotList)
+        } else {
+            requestShots()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val shots = (shots_recycler.adapter as ShotsAdapter).getShots()
+        if (shots.isNotEmpty()) {
+            outState.putParcelableArrayList(STATE_SHOTS, shots)
+        }
     }
 
     private fun requestShots() {
